@@ -1,12 +1,31 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>
-      Ionic Blank
-    </ion-title>
-  </ion-toolbar>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>{{ "TITLE_SHOPPING_LIST" | translate }}</ion-title>
+  </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  The world is your oyster.
-  <p>If you get lost, the <a target="_blank" rel="noopener" href="https://ionicframework.com/docs/">docs</a> will be your guide.</p>
+  <ion-item>
+    <ion-label>{{ "STORE" | translate }}</ion-label>
+    <ion-select  interface="popover" [(ngModel)]="store" (ionChange)="onChangeStore($event)">
+      <ion-option *ngFor="let store of this.stores" [value]="store.id">{{store.name}}</ion-option>
+    </ion-select>
+  </ion-item>
+  <ion-list>
+    <ion-item *ngFor="let listItem of modelService.getOrderedShoppingList(this.store)" (press)="presentPopover($event, listItem)" (tap)="itemTapped($event, listItem)">
+      <ion-icon name="clipboard" item-start></ion-icon>
+      <ion-label [style.text-decoration]="listItem.marked ? 'line-through' :
+        ''">{{modelService.getProductName(listItem.product_id)}}
+        {{listItem.quantity != null && listItem.quantity > 1 ? '('+listItem.quantity+')' : ''}}</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-fab right bottom>
+    <button ion-fab (click)="presentAddToListPageModal()">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
 </ion-content>
